@@ -1,0 +1,43 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Proxy HTTP </title>
+    </head>
+    <body>
+        <h1>Proxy http </h1>
+        <button onclick="compareRequests(80)">Faire 50 requete </button>
+        <p id="cacheDuration">Cache Duration: </p>
+        <p id="apiDuration">API Duration: </p>
+        <script>
+            // Your JavaScript code here
+            async function makeRequest(url, count) {
+                const startTime = Date.now();
+                const responses = [];
+
+                for (let i = 0; i < count; i++) {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    responses.push(data);
+                    console.log(responses);
+                }
+
+                const endTime = Date.now();
+                return { responses, duration: endTime - startTime };
+            }
+
+            async function compareRequests(count) {
+                // Fetch from cache
+                const cacheResult = await makeRequest("http://localhost:3000/getCach", count);
+                document.getElementById('cacheDuration').innerText = `Cache Duration: ${cacheResult.duration} ms`;
+
+                // Fetch directly (normal)
+                const normalResult = await makeRequest("http://localhost:3000/getWithApi", count);
+                document.getElementById('apiDuration').innerText = `Normal Duration: ${normalResult.duration} ms`;
+
+               
+            }
+        </script>
+    </body>
+    </html>
